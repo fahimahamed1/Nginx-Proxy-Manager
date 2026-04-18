@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations — Nginx Proxy Manager Modern</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+                         Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #e2e8f0;
+            overflow: hidden;
+        }
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 0;
+        }
+
+        /* Floating glow orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #6366f1;
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: #06b6d4;
+            bottom: -80px;
+            left: -80px;
+            animation-delay: -7s;
+        }
+
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: #8b5cf6;
+            top: 50%;
+            left: 50%;
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 10px) scale(1.02); }
+        }
+
+        /* Main card */
+        .card {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+            width: 90%;
+            padding: 48px 40px;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 24px;
+            text-align: center;
+            animation: fadeUp 0.8s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Icon */
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #6366f1, #06b6d4);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+        }
+
+        .icon-wrapper svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .subtitle strong {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* Status badges */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .status-item {
+            padding: 16px 8px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.08);
+            border-radius: 12px;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .status-item:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            margin: 0 auto 8px;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-port {
+            font-size: 20px;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 2px;
+        }
+
+        .status-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.15), transparent);
+            margin: 24px 0;
+        }
+
+        /* Next steps */
+        .next-steps {
+            text-align: left;
+        }
+
+        .next-steps h2 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            background: linear-gradient(135deg, #6366f1, #06b6d4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .step-text {
+            font-size: 14px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .step-text code {
+            background: rgba(99, 102, 241, 0.15);
+            color: #a5b4fc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 13px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #475569;
+        }
+
+        .footer a {
+            color: #6366f1;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #818cf8;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card {
+                padding: 32px 24px;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .status-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .status-item {
+                padding: 12px 4px;
+            }
+
+            .status-port {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <main class="card">
+
+        <div class="icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+        </div>
+
+
+        <h1>Congratulations!</h1>
+        <p class="subtitle">
+            <strong>Nginx Proxy Manager Modern</strong> is running successfully.
+            Your reverse proxy is ready to serve traffic.
+        </p>
+
+
+        <div class="status-grid">
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <div class="status-port">:80</div>
+                <div class="status-label">HTTP</div>
+            </div>
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <div class="status-port">:443</div>
+                <div class="status-label">HTTPS</div>
+            </div>
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <div class="status-port">:81</div>
+                <div class="status-label">Admin</div>
+            </div>
+        </div>
+
+
+        <div class="divider"></div>
+        <div class="next-steps">
+            <h2>Next Steps</h2>
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">
+                    Open the admin panel at
+                    <code>http://your-server-ip:81</code>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">
+                    Log in with your initial admin credentials
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">
+                    Add a <strong>Proxy Host</strong> to route a domain to your backend service
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-text">
+                    Enable <strong>SSL</strong> with a free Let's Encrypt certificate
+                </div>
+            </div>
+        </div>
+
+
+        <div class="divider"></div>
+        <div class="footer">
+            Nginx Proxy Manager Modern v${APP_VERSION} &mdash;
+            <a href="https://github.com/fahimahamed1/nginx-proxy-manager" target="_blank"
+               rel="noopener noreferrer">
+                GitHub
+            </a>
+        </div>
+    </main>
+</body>
+</html>
